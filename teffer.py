@@ -100,10 +100,9 @@ for dir in subdirs:
             lines = [l for l in lines if True]
             with open(ex_path, 'w') as fe:
                 fe.writelines(lines)
-    # clean mode
+    # clean mode - remove all actual.txt files
     elif args.m == 'clean':
-        # TODO
-        pass
+        os.remove(ac_path)
     else:
         print('Invalid mode')
 
