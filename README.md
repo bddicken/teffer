@@ -74,17 +74,15 @@ The test-cases used are from a programming assignment given in CS 110 at the Uof
    
    The test directory contains many tests, each with a `run.sh` and an `expected.txt` file.
    Below are the contents of these two files in the `bat-5` directory:
-
-  ```
+```
 sed -i '' -e 's/^BAT_WIDTH.*/BAT_WIDTH = 5/g' BASE_DIR/bat.py
 python3 BASE_DIR/bat.py
-  ```
-
-  ```
+```
+```
 \****\_____      /\_/\      _____/****/
  \    *****\_____|* *|_____/*****    / 
   \         *****| - |*****         /  
    \_______ *****||*||***** _______/   
                  {   }
-  ```
+```
 
