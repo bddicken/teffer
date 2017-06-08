@@ -46,8 +46,10 @@ expected = "expected.txt"
 actual   = "actual.txt"
 
 parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('-o', default='./diff.html',
+    help='HTML file to put the diff output into.')
 parser.add_argument('-t', default='./tests',
-    help='Directory containing test cases (directories) to run')
+    help='Directory containing test cases (directories) to run.')
 parser.add_argument('-s', required=True,
     help='Directory to find the program/script that the tests execute.')
 parser.add_argument('-m', default='test',
@@ -55,6 +57,7 @@ parser.add_argument('-m', default='test',
     test: Run the test suite
     update: update all of the expected.txt files with the actual.txt file contents
     clean: Clean up all of the temporary files and actual.txt files''')
+
 args = parser.parse_args()
 assert(args.m == 'test' or args.m == 'update' or args.m == 'clean')
 
@@ -62,7 +65,7 @@ cwd = os.getcwd()
 subdirs = [name for name in os.listdir(args.t)
     if os.path.isdir(os.path.join(args.t, name))]
 
-text_file = open("diff.html", "w")
+text_file = open(args.o, "w")
 text_file.write(html_begin)
 text_file.write('<h1>teffer diff results</h1>')
 text_file.write('<hr>')
