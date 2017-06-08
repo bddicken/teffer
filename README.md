@@ -1,6 +1,6 @@
 # Teffer
 
-Teffer (TEst diFFER) is a python-based tool used for autometed testing.
+Teffer (TEst diFFER) is a python-based tool used for automated testing.
 The tool runs an input program against a set of textual tests.
 For each test, teffer generates a diff.
 All of the diffs are combined and inserted into an html output, which can be viewed in your browser of choice.
@@ -67,17 +67,20 @@ To run the teffer tests, just execute:
 Below is a step-by-step guide to running teffer on some test cases.
 The test-cases used are from a programming assignment given in CS 110 at the UofA.
 
-1) Use or create a set of test cases to run teffer on.
-   Show below is a screenshow of the contents of a `tests` directory.
-   
-   ![files](./images/files.png)
-   
-   The test directory contains many tests, each with a `run.sh` and an `expected.txt` file.
-   Below are the contents of these two files in the `bat-5` directory:
+### 1) Create tests
+Use or create a set of test cases to run teffer on.
+Show below is a screenshot of the contents of a `tests` directory.
+
+![files](./images/files.png)
+
+The test directory contains many tests, each with a `run.sh` and an `expected.txt` file.
+Below are the contents of these two files in the `bat-5` directory:
+
 ```
 sed -i '' -e 's/^BAT_WIDTH.*/BAT_WIDTH = 5/g' BASE_DIR/bat.py
 python3 BASE_DIR/bat.py
 ```
+
 ```
 \****\_____      /\_/\      _____/****/
  \    *****\_____|* *|_____/*****    / 
@@ -85,4 +88,24 @@ python3 BASE_DIR/bat.py
    \_______ *****||*||***** _______/   
                  {   }
 ```
+
+### 2) Get a program to test
+
+The `student-submission` directory contains a script named `bat.py`.
+I'm not going to show the contents here, so the solution isn't blown :).
+
+### 3) Run teffer
+
+The easiest way to run deffer is in the shell.
+Open up terminal and navigate to the desktop.
+From there, you'll need to run `teffer.py` with a few command-line arguments, like so:
+
+![command](./images/command.png)
+
+Using the command-line arguments, teffer was told what directory the test-cases were in, what directory the solution was in, and the name of the diff file to generate.
+
+### 4) Check the diff
+
+After the run, you can double-click the `studentdiff.html` file to open it up in your browser.
+From here, you'll be able to check how many test-cases the student passed.
 
