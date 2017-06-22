@@ -1,3 +1,4 @@
+import shlex
 import subprocess
 import argparse
 import os
@@ -81,8 +82,15 @@ for dir in subdirs:
         run_file = open(os.path.join(full_path, 'run.sh'), 'rb')
         script = run_file.read().decode("utf-8") 
         script = script.replace('BASE_DIR', str(args.s))
-        result = subprocess.run(script, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        assert(result.returncode == 0)
+        
+        # Create new temp file with script
+        tf = open('teffer-temp.sh', 'w')
+        tf.write(script)
+        tf.close()
+
+        # Run the script
+        result = subprocess.run(['bash', './teffer-temp.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
         af = open(os.path.join(full_path, "actual.txt"), "w")
         decoded = result.stdout.decode("utf-8") 
         af.write(decoded)
@@ -96,6 +104,8 @@ for dir in subdirs:
         text_file.write(diff)
         text_file.write('<br>')
         text_file.write('<hr>')
+        
+        os.remove('./teffer-temp.sh')
     # update mode - copy contents of expected.txt into actual.txt
     elif args.m == 'update':
         with open(ac_path) as fa:
