@@ -82,6 +82,7 @@ for dir in subdirs:
         run_file = open(os.path.join(full_path, 'run.sh'), 'rb')
         script = run_file.read().decode("utf-8") 
         script = script.replace('BASE_DIR', str(args.s))
+        script = script.replace('TEST_DIR', str(full_path))
         
         # Create new temp file with script
         tf = open('teffer-temp.sh', 'w')

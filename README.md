@@ -12,8 +12,9 @@ Teffer test-cases are made by creating a single directory full of subdirectories
 Each subdirectory represents a single teffer test case.
 Each individual test directory should contain the following files:
 
-* `run.sh` : A bash scrip which will be executed by teffer, with the current working directors as the execution directory.
-             `run.sh` may use the token `COMMAND_BASE_DIR`, and teffer will replace this with the directory specified to the `-s` option of teffer.
+* `run.sh` : A bash script which will be executed by teffer, with the current working directors as the execution directory.
+             Within `run.sh`, the test-writer may use the token `BASE_DIR`, and teffer will replace this with the directory specified to the `-s` option of teffer (the directory with the code file to be tested).
+             The test-writer can also use the `TEST_DIR` directory, which teffer will replace with the directory of the test case.
 * `expected.txt` : A text file containing the expected output of this particular execution of your program.
 
 Each test directory should also contain any necessary resource files needed for the test, such as input files.
@@ -58,7 +59,7 @@ Since teffer itself is a testing framework, we use teffer to test itself.
 To run the teffer tests, just execute:
 
 ```
-./teffer.sh
+python3 teffer.py
 ```
 
 
