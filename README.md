@@ -1,7 +1,7 @@
 # Teffer
 
 Teffer (TEst diFFER) is a python-based tool used for automated testing.
-The tool runs an input program against a set of textual tests.
+The tool runs an input program against a set of text-based tests.
 For each test, teffer generates a diff.
 All of the diffs are combined and inserted into an html output, which can be viewed in your browser of choice.
 
@@ -59,7 +59,7 @@ Since teffer itself is a testing framework, we use teffer to test itself.
 To run the teffer tests, just execute:
 
 ```
-python3 teffer.py
+python3 teffer.py -t ./tests -s . -m test -o /tmp
 ```
 
 
