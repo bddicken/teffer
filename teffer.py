@@ -113,7 +113,10 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         if include_diff:
             #diff = difflib.Differ().compare(r['expected'], r['actual'])
             diff = difflib.ndiff(r['expected'], r['actual'])
-            text_file.write('    "output" : ' + json.dumps(''.join(diff)) + ',\n')
+            diff_text = '\n'.join(diff)
+            #print(diff_text)
+            #print('----------------------')
+            text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
         text_file.write('    "score" : "' + str(r['score']) + '",\n')
         text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
         if i < len(results):
@@ -157,7 +160,11 @@ for sdir in subdirs:
         af.write(decoded)
         af.close()
         expected_lines = open(ex_path, 'U').readlines()
+        for i in range(len(expected_lines)):
+            expected_lines[i] = expected_lines[i].rstrip()
         actual_lines   = open(ac_path, 'U').readlines()
+        for i in range(len(actual_lines)):
+            actual_lines[i] = actual_lines[i].rstrip()
         
         result = {}
         result['name']      = sdir
