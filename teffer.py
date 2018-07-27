@@ -76,7 +76,8 @@ Each dictionary will have three elements
     * pass      (boolean)
     * score     (integer)
     * max_score (integer, <= score)
-    * diff      (string)
+    * expected  (string)
+    * actual    (string)
 '''
 all_test_results = []
 
@@ -85,11 +86,15 @@ def write_to_html(results, out_file_name, include_diff):
     text_file.write(html_begin)
     text_file.write('<h1>teffer diff results</h1>')
     text_file.write('<hr>')
-
+    
     for r in results:
+
         text_file.write('<h2>' + r['name'] + '</h2>')
         if include_diff:
-            text_file.write(r['diff'])
+            diff = difflib.HtmlDiff().make_table(
+                r['expected'], r['actual'],
+                expected, actual)
+            text_file.write(diff)
         text_file.write('<br>')
         text_file.write('<hr>')
 
@@ -106,7 +111,9 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
-            text_file.write('    "output" : ' + json.dumps(r['diff']) + ',\n')
+            diff = difflib.Differ().compare(
+                r['expected'], r['actual'])
+            text_file.write('    "output" : ' + json.dumps('\n'.join(diff)) + ',\n')
         text_file.write('    "score" : "' + str(r['score']) + '",\n')
         text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
         if i < len(results):
@@ -151,16 +158,14 @@ for sdir in subdirs:
         af.close()
         expected_lines = open(ex_path, 'U').readlines()
         actual_lines   = open(ac_path, 'U').readlines()
-        diff = difflib.HtmlDiff().make_table(
-            expected_lines, actual_lines,
-            expected, actual)
         
         result = {}
         result['name']      = sdir
         result['pass']      = True
         result['score']     = 1
         result['max_score'] = 1
-        result['diff']      = diff
+        result['expected']  = expected_lines
+        result['actual']    = actual_lines
         all_test_results.append(result) 
         
         os.remove('./teffer-temp.sh')
