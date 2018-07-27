@@ -71,9 +71,9 @@ text_file.write(html_begin)
 text_file.write('<h1>teffer diff results</h1>')
 text_file.write('<hr>')
 
-for dir in subdirs:
+for sdir in subdirs:
     os.chdir(cwd)
-    full_path = os.path.join(args.t, dir)
+    full_path = os.path.join(args.t, sdir)
     ex_path = os.path.join(full_path, expected)
     ac_path = os.path.join(full_path, actual)
 
@@ -101,7 +101,7 @@ for dir in subdirs:
         diff = difflib.HtmlDiff().make_table(
             expected_lines, actual_lines,
             expected, actual)
-        text_file.write('<h2>' + dir + '</h2>')
+        text_file.write('<h2>' + sdir + '</h2>')
         text_file.write(diff)
         text_file.write('<br>')
         text_file.write('<hr>')

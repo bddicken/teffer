@@ -1,4 +1,4 @@
 actual.txt
-command.txt
 expected.txt
 file.txt
+run.sh

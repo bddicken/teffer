@@ -1,1 +1,1 @@
-cat file.txt
+cat TEST_DIR/file.txt
