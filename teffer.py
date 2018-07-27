@@ -159,16 +159,17 @@ for sdir in subdirs:
         # Run the script
         result = subprocess.run(['bash', './teffer-temp.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
-        af = open(os.path.join(full_path, "actual.txt"), "w")
+        actual_output_file = open(os.path.join(full_path, "actual.txt"), "w")
         decoded = result.stdout.decode("utf-8") 
-        af.write(decoded)
-        af.close()
-        expected_lines = open(ex_path, 'U').readlines()
-        for i in range(len(expected_lines)):
-            expected_lines[i] = expected_lines[i].rstrip()
-        actual_lines   = open(ac_path, 'U').readlines()
-        for i in range(len(actual_lines)):
-            actual_lines[i] = actual_lines[i].rstrip()
+        actual_output_file.write(decoded)
+        actual_output_file.close()
+
+        expected_lines = []
+        for line in open(ex_path, 'U'):
+            expected_lines.append(line.rstrip('\n'))
+        actual_lines = []
+        for line in open(ac_path, 'U'):
+            actual_lines.append(line.rstrip('\n'))
         
         result = {}
         result['name']      = sdir
