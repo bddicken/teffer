@@ -103,15 +103,15 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
  
     i = 0
     for r in results:
+        i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
             text_file.write('    "output" : ' + json.dumps(r['diff']) + ',\n')
         text_file.write('    "score" : "' + str(r['score']) + '",\n')
         text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
-        if i == len(results):
+        if i < len(results):
             text_file.write(',')
         text_file.write('\n')
-        i += 1
     
     text_file.write('] }\n')
     text_file.close()
