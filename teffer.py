@@ -164,16 +164,13 @@ for sdir in subdirs:
         tf.write('#!/bin/bash\n')
         tf.write(script)
         tf.close()
-        
-        actual_output_file = open(ac_path, "w")
 
         # Run the script
-        #result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        result = subprocess.run(['/bin/bash', temp], stdout=actual_output_file, stderr=subprocess.PIPE)
+        result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
-        #decoded = result.stdout.decode("utf-8") 
-        #actual_output_file = open(ac_path, "w")
-        #actual_output_file.write(decoded)
+        decoded = result.stdout.decode("utf-8") 
+        actual_output_file = open(ac_path, "w")
+        actual_output_file.write(decoded)
 
         actual_output_file.close()
         
