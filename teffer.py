@@ -166,7 +166,7 @@ for sdir in subdirs:
         tf.close()
 
         # Run the script
-        result = subprocess.run(['bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         actual_output_file = open(ac_path, "w")
         decoded = result.stdout.decode("utf-8") 
