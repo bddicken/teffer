@@ -159,13 +159,14 @@ for sdir in subdirs:
         print(script + '\n\n')
         
         # Create new temp file with script
-        tf = open('teffer-temp.sh', 'w')
+        temp = os.path.join(cwd, 'teffer-temp.sh')
+        tf = open(temp, 'w')
         tf.write('#!/bin/bash\n')
         tf.write(script)
         tf.close()
 
         # Run the script
-        result = subprocess.run(['bash', './teffer-temp.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(['bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         actual_output_file = open(ac_path, "w")
         decoded = result.stdout.decode("utf-8") 
