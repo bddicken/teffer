@@ -165,6 +165,8 @@ for sdir in subdirs:
         tf.write(script)
         tf.close()
 
+        # The gradescope problem is somewhere here ish!
+        # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
         result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
