@@ -163,16 +163,16 @@ for sdir in subdirs:
         # Run the script
         result = subprocess.run(['bash', './teffer-temp.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
-        print('\n\n------- result -------')
-        print(result + '\n\n')
-    
-        print('\n\n------- ac_path -------')
-        print(ac_path + '\n\n')
-
         actual_output_file = open(ac_path, "w")
         decoded = result.stdout.decode("utf-8") 
         actual_output_file.write(decoded)
         actual_output_file.close()
+        
+        print('\n\n------- decoded -------')
+        print(decoded + '\n\n')
+    
+        print('\n\n------- ac_path -------')
+        print(ac_path + '\n\n')
 
         expected_lines = []
         for line in open(ex_path, 'r'):
