@@ -164,13 +164,17 @@ for sdir in subdirs:
         tf.write('#!/bin/bash\n')
         tf.write(script)
         tf.close()
-
-        # Run the script
-        result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         actual_output_file = open(ac_path, "w")
-        decoded = result.stdout.decode("utf-8") 
-        actual_output_file.write(decoded)
+
+        # Run the script
+        #result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(['/bin/bash', temp], stdout=actual_output_file, stderr=subprocess.PIPE)
+        
+        #decoded = result.stdout.decode("utf-8") 
+        #actual_output_file = open(ac_path, "w")
+        #actual_output_file.write(decoded)
+
         actual_output_file.close()
         
         print('\n\n------- decoded -------')
@@ -195,7 +199,7 @@ for sdir in subdirs:
         result['actual']    = actual_lines
         all_test_results.append(result) 
         
-        os.remove('./teffer-temp.sh')
+        os.remove(temp)
     # update mode - copy contents of expected.txt into actual.txt
     elif args.m == 'update':
         with open(ac_path) as fa:
