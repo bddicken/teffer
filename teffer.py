@@ -155,8 +155,12 @@ for sdir in subdirs:
         script = script.replace('BASE_DIR', str(args.s))
         script = script.replace('TEST_DIR', str(full_path))
         
+        print('\n\n------- script -------')
+        print(script + '\n\n')
+        
         # Create new temp file with script
         tf = open('teffer-temp.sh', 'w')
+        tf.write('#!/bin/bash\n')
         tf.write(script)
         tf.close()
 
