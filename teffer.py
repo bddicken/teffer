@@ -1,4 +1,4 @@
-import shlex
+#import shlex
 import subprocess
 import argparse
 import os
@@ -162,17 +162,19 @@ for sdir in subdirs:
 
         # Run the script
         result = subprocess.run(['bash', './teffer-temp.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-        actual_output_file = open(os.path.join(full_path, "actual.txt"), "w")
+    
+        print('\n\n------- ac_path -------')
+        print(ac_path + '\n\n')
+        actual_output_file = open(ac_path, "w")
         decoded = result.stdout.decode("utf-8") 
         actual_output_file.write(decoded)
         actual_output_file.close()
 
         expected_lines = []
-        for line in open(ex_path, 'U'):
+        for line in open(ex_path, 'r'):
             expected_lines.append(line.rstrip('\n'))
         actual_lines = []
-        for line in open(ac_path, 'U'):
+        for line in open(ac_path, 'r'):
             actual_lines.append(line.rstrip('\n'))
         
         result = {}
