@@ -168,8 +168,13 @@ for sdir in subdirs:
         # The gradescope problem is somewhere here ish!
         # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
-        #result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        result = subprocess.run(['/bin/bash', temp])
+        result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #result = subprocess.run(['/bin/bash', temp])
+
+        print('run rv ' + str(result.returncode))
+        print('run args ' + str(result.args))
+        print('run stdout ' + str(result.stdout))
+        print('run stderr ' + str(result.stderr))
         
         decoded = result.stdout.decode("utf-8") 
         actual_output_file = open(ac_path, "w")
