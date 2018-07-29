@@ -111,19 +111,8 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
-            #diff = difflib.Differ().compare(r['expected'], r['actual'])
             diff = difflib.ndiff(r['expected'], r['actual'])
             diff_text = '\n'.join(diff)
-            print('------- expected ------- ')
-            print(r['expected'])
-            print('------- actual ------- ')
-            print(r['actual'])
-            print('----------------------')
-            print('----------------------')
-            print(diff_text)
-            print('----------------------')
-            print('----------------------')
-            print(json.dumps(diff_text))
             text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
         text_file.write('    "score" : "' + str(r['score']) + '",\n')
         text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
@@ -155,9 +144,6 @@ for sdir in subdirs:
         script = script.replace('BASE_DIR', str(args.s))
         script = script.replace('TEST_DIR', str(full_path))
         
-        print('\n\n------- script -------')
-        print(script + '\n\n')
-        
         # Create new temp file with script
         temp = os.path.join(cwd, 'teffer-temp.sh')
         tf = open(temp, 'w')
@@ -169,25 +155,13 @@ for sdir in subdirs:
         # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
         result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #result = subprocess.run(['/bin/bash', temp])
 
-        print('run rv ' + str(result.returncode))
-        print('run args ' + str(result.args))
-        print('run stdout ' + str(result.stdout))
-        print('run stderr ' + str(result.stderr))
-        
         decoded = result.stdout.decode("utf-8") 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
 
         actual_output_file.close()
         
-        print('\n\n------- decoded -------')
-        print(decoded + '\n\n')
-    
-        print('\n\n------- ac_path -------')
-        print(ac_path + '\n\n')
-
         expected_lines = []
         for line in open(ex_path, 'r'):
             expected_lines.append(line.rstrip('\n'))
