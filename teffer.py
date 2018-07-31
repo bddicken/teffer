@@ -81,10 +81,12 @@ Each dictionary will have three elements
 '''
 all_test_results = []
     
-def longest_str_in_list(l)
-    for i in range(length):
+def longest_str_in_list(l):
+    widest = 0
+    for i in range(len(l)):
          if len(l) > i and len(l[i]) > widest:
              widest = len(l[i])
+    return widest
 
 def put_strings_side_by_side(a, b):
     result = ''
@@ -133,7 +135,7 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
             sbs = 'Your output on left, expected on right\n'
-            sbs += put_strings_side_by_side(r['actual'], r['expected'])
+            sbs += put_strings_side_by_side('\n'.join(r['actual']), '\n'.join(r['expected']))
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
             #text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
