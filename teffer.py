@@ -80,6 +80,27 @@ Each dictionary will have three elements
     * actual    (string)
 '''
 all_test_results = []
+    
+def longest_str_in_list(l)
+    for i in range(length):
+         if len(l) > i and len(l[i]) > widest:
+             widest = len(l[i])
+
+def put_strings_side_by_side(a, b):
+    result = ''
+    al = a.split('\n')
+    bl = b.split('\n')
+    
+    widest = max(longest_str_in_list(al), longest_str_in_list(bl))
+    length = max(len(al), len(bl))
+ 
+    for i in range(length):
+         result += al[i].strip('\n').ljust(widest)
+         result += ' | '
+         result += bl[i].ljust(widest)
+    
+    return result
+
 
 def write_to_html(results, out_file_name, include_diff):
     text_file = open(out_file_name, "w")
@@ -111,9 +132,12 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
-            diff = difflib.ndiff(r['expected'], r['actual'])
-            diff_text = '\n'.join(diff)
-            text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
+            sbs = 'Your output on left, expected on right\n'
+            sbs += put_strings_side_by_side(r['actual'], r['expected'])
+            #diff = difflib.ndiff(r['expected'], r['actual'])
+            #diff_text = '\n'.join(diff)
+            #text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
+            text_file.write('    "output" : ' + json.dumps(sbs) + ',\n')
         text_file.write('    "score" : "' + str(r['score']) + '",\n')
         text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
         if i < len(results):
