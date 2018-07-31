@@ -97,9 +97,10 @@ def put_strings_side_by_side(a, b):
     length = max(len(al), len(bl))
  
     for i in range(length):
-         result += al[i].strip('\n').ljust(widest)
+         result += al[i].ljust(widest)
          result += ' | '
          result += bl[i].ljust(widest)
+         result += '\n'
     
     return result
 
