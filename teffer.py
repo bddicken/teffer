@@ -88,6 +88,27 @@ def longest_str_in_list(l):
              widest = len(l[i])
     return widest
 
+def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
+    al = a.split('\n')
+    bl = b.split('\n')
+
+    if len(al) != len(bl):
+        return False
+    
+    for i in range(len(al)):
+        am = al[i]
+        bm = bl[i]
+        if ignore_tw:
+            am = am.rstrip(' \n\t')
+            bm = bm.rstrip(' \n\t')
+        if ignore_lw:
+            am = am.lstrip(' \n\t')
+            bm = bm.lstrip(' \n\t')
+        if am != bm:
+            return False
+
+    return True
+
 def put_strings_side_by_side(a, b):
     result = ''
     al = a.split('\n')
@@ -204,7 +225,7 @@ for sdir in subdirs:
         
         result = {}
         result['name']      = sdir
-        result['pass']      = True
+        result['pass']      = are_strings_same('\n'.join(actual_lines), '\n'.join(expected_lines))
         result['score']     = 1
         result['max_score'] = 1
         result['expected']  = expected_lines
