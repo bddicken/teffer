@@ -223,10 +223,11 @@ for sdir in subdirs:
         for line in open(ac_path, 'r'):
             actual_lines.append(line.rstrip('\n'))
         
+        same = are_strings_same('\n'.join(actual_lines), '\n'.join(expected_lines))
         result = {}
         result['name']      = sdir
-        result['pass']      = are_strings_same('\n'.join(actual_lines), '\n'.join(expected_lines))
-        result['score']     = 1
+        result['pass']      = same
+        result['score']     = 1 if same else 0
         result['max_score'] = 1
         result['expected']  = expected_lines
         result['actual']    = actual_lines
