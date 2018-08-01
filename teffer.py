@@ -89,6 +89,12 @@ def longest_str_in_list(l):
     return widest
 
 def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
+    '''
+    Return True if strings a and b are the same (other than perhaps ignoring some whitespace).
+    Return False otherwise.
+    If ignore_tw is set to True, ignore the trailing whitespace when comparing a and b.
+    If ignore_lw is set to True, ignore the leading whitespace when comparing a and b.
+    '''
     al = a.split('\n')
     bl = b.split('\n')
 
