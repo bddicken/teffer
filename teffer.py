@@ -116,7 +116,7 @@ def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
     return True
 
 def put_strings_side_by_side(a, b):
-    result = ''
+    result = '<code>'
     al = a.split('\n')
     bl = b.split('\n')
     
@@ -147,6 +147,7 @@ def put_strings_side_by_side(a, b):
         else: 
             result += left + ' | ' + right + '\n'
     
+    result += '</code>'
     return result
 
 
@@ -180,12 +181,11 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
-            sbs = '<code>\nYour output on left, expected on right\n'
+            sbs = 'Your output on left, expected on right\n'
             sbs += put_strings_side_by_side('\n'.join(r['actual']), '\n'.join(r['expected']))
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
             #text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
-            sbs += '</code>'
             text_file.write('    "output" : ' + json.dumps(sbs) + ',\n')
         text_file.write('    "score" : "' + str(r['score']) + '",\n')
         text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
