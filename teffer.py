@@ -116,7 +116,7 @@ def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
     return True
 
 def put_strings_side_by_side(a, b):
-    result = ''
+    result = '<code>'
     al = a.split('\n')
     bl = b.split('\n')
     
@@ -147,6 +147,7 @@ def put_strings_side_by_side(a, b):
         else: 
             result += left + ' | ' + right + '\n'
     
+    result += '</code>'
     return result
 
 
