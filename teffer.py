@@ -117,7 +117,7 @@ def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
 
 
 def find_first_difference_index(a, b):
-    length = max(len(a), len(b))
+    length = min(len(a), len(b))
     for i in range(length):
         if a[i] != b[i]:
             return i
@@ -155,8 +155,8 @@ def put_strings_side_by_side(a, b):
         elif not same:
             result += 'DIFFR |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
-            diff_i = find_first_difference_index(al, bl)
-            result += '\n     |' + (' ' * (diff_i-1)) + '^'
+            diff_i = find_first_difference_index(left, right)
+            result += '     |' + (' ' * (diff_i-1)) + '^'
         else: 
             result += '      |'
             result += left + '|' + right + '\n'
