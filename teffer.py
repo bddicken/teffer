@@ -156,7 +156,7 @@ def put_strings_side_by_side(a, b):
             result += 'DIFFR |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
             diff_i = find_first_difference_index(left, right)
-            result += '     |' + (' ' * (diff_i-1)) + '^'
+            result += '     |' + (' ' * (diff_i-1)) + '^\n'
         else: 
             result += '      |'
             result += left + '|' + right + '\n'
