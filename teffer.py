@@ -142,7 +142,7 @@ def put_strings_side_by_side(a, b):
         
         if (len(bl) > i and len(al) <= i) or (len(al) > i and len(bl) <= i):
             result += not_matching_begin + left + not_matching_end + ' | ' + right + '\n'
-        else if not same:
+        elif not same:
             result += not_matching_begin + left + not_matching_end + ' | ' + right + '\n'
         else: 
             result += left + ' | ' + right + '\n'
