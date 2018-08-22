@@ -115,6 +115,15 @@ def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
 
     return True
 
+
+def find_first_difference_index(a, b):
+    length = max(len(a), len(b))
+    for i in range(length):
+        if a[i] != b[i]:
+            return i
+    return -1
+    
+
 def put_strings_side_by_side(a, b):
     result = ''
     al = a.split('\n')
@@ -122,18 +131,35 @@ def put_strings_side_by_side(a, b):
     
     widest = max(longest_str_in_list(al), longest_str_in_list(bl))
     length = max(len(al), len(bl))
- 
+
     for i in range(length):
-         if len(al) > i:
-             result += al[i].ljust(widest)
-         else:
-             result += ''.ljust(widest)
-         result += ' | '
-         if len(bl) > i:
-             result += bl[i].ljust(widest)
-         else:
-             result += ''.ljust(widest)
-         result += '\n'
+        left = ''
+        right = ''
+          
+        if len(al) > i:
+            left += al[i].ljust(widest)
+        else:
+            left += ''.ljust(widest)
+        if len(bl) > i:
+            right += bl[i].ljust(widest)
+        else:
+            right += ''.ljust(widest)
+        
+        same = are_strings_same(left, right)
+        not_matching_begin = '' #'<span style="color: blue; background-color: red;">'
+        not_matching_end = '' #'</span>'
+        
+        if (len(bl) > i and len(al) <= i) or (len(al) > i and len(bl) <= i):
+            result += 'EXTRA |'
+            result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
+        elif not same:
+            result += 'DIFFR |'
+            result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
+            diff_i find_first_difference_index(al, bl)
+            result += '\n     |' + (' ' * (diff_i-1)) + '^'
+        else: 
+            result += '      |'
+            result += left + '|' + right + '\n'
     
     return result
 
@@ -168,11 +194,12 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
-            sbs = 'Your output on left, expected on right\n'
+            sbs = '<code>\nYour output on left, expected on right\n'
             sbs += put_strings_side_by_side('\n'.join(r['actual']), '\n'.join(r['expected']))
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
             #text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
+            sbs += '</code>'
             text_file.write('    "output" : ' + json.dumps(sbs) + ',\n')
         text_file.write('    "score" : "' + str(r['score']) + '",\n')
         text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
