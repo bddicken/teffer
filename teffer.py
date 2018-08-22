@@ -155,7 +155,7 @@ def put_strings_side_by_side(a, b):
         elif not same:
             result += 'DIFFR |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
-            diff_i find_first_difference_index(al, bl)
+            diff_i = find_first_difference_index(al, bl)
             result += '\n     |' + (' ' * (diff_i-1)) + '^'
         else: 
             result += '      |'
