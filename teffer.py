@@ -152,7 +152,7 @@ def put_strings_side_by_side(a, b):
         if (len(bl) > i and len(al) <= i):
             result += 'EXTRA   |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
-        if (len(al) > i and len(bl) <= i):
+        elif (len(al) > i and len(bl) <= i):
             result += 'MISSING |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
         elif not same:
