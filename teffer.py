@@ -149,15 +149,18 @@ def put_strings_side_by_side(a, b):
         not_matching_begin = '' #'<span style="color: blue; background-color: red;">'
         not_matching_end = '' #'</span>'
         
-        if (len(bl) > i and len(al) <= i) or (len(al) > i and len(bl) <= i):
-            result += 'EXTRA |'
+        if (len(bl) > i and len(al) <= i):
+            result += 'EXTRA   |'
+            result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
+        if (len(al) > i and len(bl) <= i):
+            result += 'MISSING |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
         elif not same:
             result += '      |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
             diff_i = find_first_difference_index(left, right)
             carat =  ((' ' * (diff_i)) + '^').ljust(widest) + '|\n'
-            result += '>>>>>>|' + carat
+            result += ' >>>>>> |' + carat
         else: 
             result += '      |'
             result += left + '|' + right + '\n'
