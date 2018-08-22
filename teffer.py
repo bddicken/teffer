@@ -139,7 +139,10 @@ def put_strings_side_by_side(a, b):
         same = are_strings_same(left, right)
         not_matching_begin = '<span style="color: blue; background-color: red;">'
         not_matching_end = '</span>'
-        if not same:
+        
+        if (len(bl) > i and len(al) <= i) or (len(al) > i and len(bl) <= i):
+            result += not_matching_begin + left + not_matching_end + ' | ' + right + '\n'
+        else if not same:
             result += not_matching_begin + left + not_matching_end + ' | ' + right + '\n'
         else: 
             result += left + ' | ' + right + '\n'
