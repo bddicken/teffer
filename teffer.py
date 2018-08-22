@@ -122,27 +122,18 @@ def put_strings_side_by_side(a, b):
     
     widest = max(longest_str_in_list(al), longest_str_in_list(bl))
     length = max(len(al), len(bl))
-
+ 
     for i in range(length):
-        left = ''
-        right = ''
-          
-        if len(al) > i:
-            left += al[i].ljust(widest)
-        else:
-            left += ''.ljust(widest)
-        if len(bl) > i:
-            right += bl[i].ljust(widest)
-        else:
-            right += ''.ljust(widest)
-        
-        same = are_strings_same(left, right)
-        not_matching_begin = '<span style="color: blue; background-color: red;">'
-        not_matching_end = '</span>'
-        if not same:
-            result += not_matching_begin + left + not_matching_end + ' | ' + right + '\n'
-        else: 
-            result += left + ' | ' + right + '\n'
+         if len(al) > i:
+             result += al[i].ljust(widest)
+         else:
+             result += ''.ljust(widest)
+         result += ' | '
+         if len(bl) > i:
+             result += bl[i].ljust(widest)
+         else:
+             result += ''.ljust(widest)
+         result += '\n'
     
     return result
 
