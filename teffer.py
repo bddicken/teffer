@@ -156,13 +156,13 @@ def put_strings_side_by_side(a, b):
             result += 'MISSING |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
         elif not same:
-            result += '      |'
+            result += '        |'
             result += not_matching_begin + left + not_matching_end + '|' + right + '\n'
             diff_i = find_first_difference_index(left, right)
             carat =  ((' ' * (diff_i)) + '^').ljust(widest) + '|\n'
             result += ' >>>>>> |' + carat
         else: 
-            result += '      |'
+            result += '        |'
             result += left + '|' + right + '\n'
     
     return result
