@@ -229,7 +229,11 @@ for sdir in subdirs:
         for line in open(ac_path, 'r'):
             actual_lines.append(line.rstrip('\n'))
         
-        same = are_strings_same('\n'.join(actual_lines), '\n'.join(expected_lines))
+        a = '\n'.join(actual_lines)
+        e = '\n'.join(expected_lines)
+        a = a.rstrip(' \n\t')
+        e = e.rstrip(' \n\t')
+        same = are_strings_same(a, e)
         result = {}
         result['name']      = sdir
         result['pass']      = same
