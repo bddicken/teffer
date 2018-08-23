@@ -228,9 +228,11 @@ for sdir in subdirs:
         actual_lines = []
         for line in open(ac_path, 'r'):
             actual_lines.append(line.rstrip('\n'))
-        
+       
         a = '\n'.join(actual_lines)
         e = '\n'.join(expected_lines)
+        # Ignore trailing spaces, newlines, and tabs
+        # Should this be an option?
         a = a.rstrip(' \n\t')
         e = e.rstrip(' \n\t')
         same = are_strings_same(a, e)
