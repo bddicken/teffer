@@ -235,7 +235,7 @@ for sdir in subdirs:
         # Should this be an option?
         a = a.rstrip(' \n\t')
         e = e.rstrip(' \n\t')
-        same = are_strings_same(a, e, True, True)
+        same = are_strings_same(a, e, True, False)
         result = {}
         result['name']      = sdir
         result['pass']      = same
