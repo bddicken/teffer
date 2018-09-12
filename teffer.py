@@ -67,6 +67,8 @@ parser.add_argument('-m', default='test',
     test: Run the test suite
     update: update all of the expected.txt files with the actual.txt file contents
     clean: Clean up all of the temporary files and actual.txt files''')
+parser.add_argument('-e', default='15',
+    help='The timeout length, in seconds. This is a per-test-case timeout.')
 
 '''
 Array of dictionaries
@@ -214,9 +216,18 @@ for sdir in subdirs:
         # The gradescope problem is somewhere here ish!
         # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
-        result = subprocess.run(['/bin/bash', temp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        decoded = '?'
+        try:
+            result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
+                                    stdout=subprocess.PIPE, \
+                                    stderr=subprocess.PIPE, \
+                                    timeout=int(args.e))
+            decoded = result.stdout.decode("utf-8") 
+        except subprocess.TimeoutExpired:
+            print('Time!')
+            decoded = 'Time limit surpassed!'
+            
 
-        decoded = result.stdout.decode("utf-8") 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
 
