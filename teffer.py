@@ -222,9 +222,9 @@ for sdir in subdirs:
                                 timeout=(int(args.e) + 1))
         decoded = result.stdout.decode("utf-8")
         if decoded.strip(' \n\t') == '':
-            decoded = 'A problem occurred'
-            decoded += 'Either your program produced an error'
-            decoded += 'or it just took too long (infinite loop?)'
+            decoded = 'A problem occurred\n'
+            decoded += 'Either your program produced an error\n'
+            decoded += 'or it just took too long (infinite loop?)\n'
 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
