@@ -221,7 +221,7 @@ for sdir in subdirs:
             result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
                                     stdout=subprocess.PIPE, \
                                     stderr=subprocess.PIPE, \
-                                    timeout=int(args.e))
+                                    timeout=(int(args.e) + 1))
             decoded = result.stdout.decode("utf-8") 
         except subprocess.TimeoutExpired:
             print('Time!')
