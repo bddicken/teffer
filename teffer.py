@@ -216,7 +216,7 @@ for sdir in subdirs:
         # The gradescope problem is somewhere here ish!
         # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
-        result = subprocess.run(['gtimeout', args.e, '/bin/bash', temp], \
+        result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
                                 stdout=subprocess.PIPE, \
                                 stderr=subprocess.PIPE, \
                                 timeout=(int(args.e) + 1))
