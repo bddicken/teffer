@@ -216,15 +216,18 @@ for sdir in subdirs:
         # The gradescope problem is somewhere here ish!
         # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
-        result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
+        result = subprocess.run(['gtimeout', args.e, '/bin/bash', temp], \
                                 stdout=subprocess.PIPE, \
                                 stderr=subprocess.PIPE, \
                                 timeout=(int(args.e) + 1))
         decoded = result.stdout.decode("utf-8")
         if decoded.strip(' \n\t') == '':
-            decoded = 'A problem occurred\n'
-            decoded += 'Either your program produced an error\n'
-            decoded += 'or it just took too long (infinite loop?)\n'
+            decoded = 'A problem occurred!\n'
+            decoded += 'This issue could be one of a number of problems, including:\n'
+            decoded += '  * You named your file incorrectly\n'
+            decoded += '  * Your program produced an error\n'
+            decoded += '  * Your code took too long (perhaps an infinite loop?)\n'
+            decoded += 'Please try to address the issue, and submit again.'
 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
