@@ -179,7 +179,8 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
         if include_diff:
-            sbs = 'Your output on left, expected on right\n'
+            sbs  = 'Your output on left, expected output on right\n'
+            sbs += 'Lines beginning with a \'>\' indicates a line that differs from the expected output\n\n'
             sbs += put_strings_side_by_side('\n'.join(r['actual']), '\n'.join(r['expected']))
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
