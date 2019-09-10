@@ -126,6 +126,10 @@ def put_strings_side_by_side(a, b):
     length = max(len(al), len(bl))
  
     for i in range(length):
+         if al[i] != bl[i]:
+             result += '> '
+         else:
+             result += '> '
          if len(al) > i:
              result += al[i].ljust(widest)
          else:
