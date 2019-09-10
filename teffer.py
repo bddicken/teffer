@@ -129,14 +129,17 @@ def put_strings_side_by_side(a, b):
  
     for i in range(length):
          if are_strings_same(al[i], bl[i]):
-             result += '>|'
-         else:
              result += ' |'
+         else:
+             result += '>|'
+
          if len(al) > i:
              result += al[i].ljust(widest)
          else:
              result += ''.ljust(widest)
-         result += ' | '
+
+         result += '|'
+         
          if len(bl) > i:
              result += bl[i].ljust(widest)
          else:
