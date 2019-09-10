@@ -97,7 +97,7 @@ def are_lines_same(a, b, ignore_tw=True, ignore_lw=False):
     if ignore_lw:
         a = a.lstrip(' \n\t')
         b = b.lstrip(' \n\t')
-    return a == b:
+    return a == b
 
 def are_strings_same(a, b, ignore_tw=True, ignore_lw=False):
     '''
@@ -128,7 +128,7 @@ def put_strings_side_by_side(a, b):
     length = max(len(al), len(bl))
  
     for i in range(length):
-         if are_strings_same(al[i], bl[i])
+         if are_strings_same(al[i], bl[i]):
              result += '>|'
          else:
              result += ' |'
