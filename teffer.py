@@ -90,7 +90,16 @@ def longest_str_in_list(l):
              widest = len(l[i])
     return widest
 
-def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
+def are_lines_same(a, b, ignore_tw=True, ignore_lw=False):
+    if ignore_tw:
+        a = a.rstrip(' \n\t')
+        b = b.rstrip(' \n\t')
+    if ignore_lw:
+        a = a.lstrip(' \n\t')
+        b = b.lstrip(' \n\t')
+    return a == b:
+
+def are_strings_same(a, b, ignore_tw=True, ignore_lw=False):
     '''
     Return True if strings a and b are the same (other than perhaps ignoring some whitespace).
     Return False otherwise.
@@ -104,15 +113,8 @@ def are_strings_same(a, b, ignore_tw=False, ignore_lw=False):
         return False
     
     for i in range(len(al)):
-        am = al[i]
-        bm = bl[i]
-        if ignore_tw:
-            am = am.rstrip(' \n\t')
-            bm = bm.rstrip(' \n\t')
-        if ignore_lw:
-            am = am.lstrip(' \n\t')
-            bm = bm.lstrip(' \n\t')
-        if am != bm:
+        same = are_lines_same(al[i], bl[i])
+        if not same:
             return False
 
     return True
@@ -126,10 +128,10 @@ def put_strings_side_by_side(a, b):
     length = max(len(al), len(bl))
  
     for i in range(length):
-         if al[i] != bl[i]:
-             result += '> '
+         if are_strings_same(al[i], bl[i])
+             result += '>|'
          else:
-             result += '> '
+             result += ' |'
          if len(al) > i:
              result += al[i].ljust(widest)
          else:
@@ -251,7 +253,7 @@ for sdir in subdirs:
         # Should this be an option?
         a = a.rstrip(' \n\t')
         e = e.rstrip(' \n\t')
-        same = are_strings_same(a, e, True, False)
+        same = are_strings_same(a, e)
         result = {}
         result['name']      = sdir
         result['pass']      = same
