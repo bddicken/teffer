@@ -128,8 +128,11 @@ def put_strings_side_by_side(a, b):
     length = max(len(al), len(bl))
  
     for i in range(length):
-         if are_strings_same(al[i], bl[i]):
-             result += ' |'
+         if len(al) > i and len(bl[i]) > i:
+             if are_strings_same(al[i], bl[i]):
+                 result += ' |'
+             else:
+                 result += '>|'
          else:
              result += '>|'
 
