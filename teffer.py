@@ -235,12 +235,19 @@ for sdir in subdirs:
                                 timeout=(int(args.e) + 1))
         decoded = result.stdout.decode("utf-8")
         if decoded.strip(' \n\t') == '':
-            decoded = 'A problem occurred!\n'
-            decoded += 'This issue could be one of a number of problems, including:\n'
-            decoded += '  * You named your file incorrectly\n'
-            decoded += '  * Your program produced an error\n'
-            decoded += '  * Your code took too long (perhaps an infinite loop?)\n'
-            decoded += 'Please try to address the issue, and submit again.'
+            decoded_err = result.stderr.decode("utf-8")
+            if decoded_err.strip(' \n\t') == '':
+                decoded = 'A problem occurred!\n'
+                decoded += 'This issue could be one of a number of problems, including:\n'
+                decoded += '  * You named your file incorrectly\n'
+                decoded += '  * Your program produced an error\n'
+                decoded += '  * Your code took too long (perhaps an infinite loop?)\n'
+                decoded += 'Please try to address the issue, and submit again.'
+            else:
+                decoded = 'A problem occurred!\n'
+                decoded += 'Your program produced an error:\n\n'
+                decoded += decoded_err + '\n\n'
+                decoded += 'Please try to address the issue, and submit again.'
 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
