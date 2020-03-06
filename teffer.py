@@ -236,12 +236,17 @@ for sdir in subdirs:
                                   stderr=subprocess.PIPE, \
                                   check=True)
         except subprocess.CalledProcessError as err:
+            # Print to stdout for staffs' debugging
+            print()
             print('A problem occurred:', err)
             print('Don\'t worry, this should be the student\'s mistake.')
             result = err  # Gathering the stdout and stderr
             subproc_exit_code = err.returncode
          
         decoded = result.stdout.decode("utf-8")
+        
+        # If the command times out, then exit with status 124.
+        # Otherwise, exit with the status of COMMAND. 
         if subproc_exit_code != 0:
             if subproc_exit_code == 124:
                 decoded = 'A problem occurred: Time Limit Exceeded!\n'
