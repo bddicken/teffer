@@ -244,8 +244,8 @@ for sdir in subdirs:
         decoded = result.stdout.decode("utf-8")
         if subproc_exit_code != 0:
             if subproc_exit_code == 124:
-                decoded = 'A problem occurred: Time Limit Exceeded!'
-                decoded += 'Your code took too long to run (perhaps an infinite loop?)'
+                decoded = 'A problem occurred: Time Limit Exceeded!\n'
+                decoded += 'Your code took too long to run (perhaps an infinite loop?)\n'
                 decoded += 'Please try to address the issue, and submit again.'
             else:
                 decoded_err = result.stderr.decode("utf-8")
