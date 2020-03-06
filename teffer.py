@@ -241,6 +241,7 @@ for sdir in subdirs:
         if is_timeouted:
             decoded = 'A problem occurred: Time Limit Exceeded!'
             decoded += 'Your code took too long to run (perhaps an infinite loop?)'
+            decoded += 'Please try to address the issue, and submit again.'
         else:
             decoded = result.stdout.decode("utf-8")
             if decoded.strip(' \n\t') == '':
@@ -255,8 +256,7 @@ for sdir in subdirs:
                     decoded = 'A problem occurred: Run Time Error\n'
                     decoded += 'Your program produced an error when it\'s running.\n'
                     decoded += 'You will be able to get more details when debugging on your device.\n'
-
-        decoded += 'Please try to address the issue, and submit again.'
+                    decoded += 'Please try to address the issue, and submit again.'
 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
