@@ -238,6 +238,7 @@ for sdir in subdirs:
         except subprocess.CalledProcessError as err:
             print('A problem occurred:', err)
             print('Don\'t worry, this should be the student\'s mistake.')
+            result = err  # Gathering the stdout and stderr
             subproc_exit_code = err.returncode
          
         decoded = result.stdout.decode("utf-8")
@@ -255,11 +256,11 @@ for sdir in subdirs:
                     decoded += '  * Your program produced an unknown error\n'
                     decoded += 'Please try to address the issue, and submit again.'
                 else:
-                    decoded = 'A problem occurred: Run Time Error\n'
+                    decoded = 'A problem occurred: Runtime Error\n'
                     decoded += 'Your program produced an error when it\'s running.\n'
                     decoded += 'You will be able to get more details when debugging on your device.\n'
                     decoded += 'Please try to address the issue, and submit again.'
-                    print('RTE Details:\n\n', decoded_err)
+                    print('\nRuntime Error Details:\n', decoded_err)
                     
 
         actual_output_file = open(ac_path, "w")
