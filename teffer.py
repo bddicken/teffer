@@ -229,22 +229,24 @@ for sdir in subdirs:
         # The gradescope problem is somewhere here ish!
         # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
-        is_timeouted = False
+        subproc_exit_code = 0
         try:
-          result = subprocess.run(['/bin/bash', temp], \
+            result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
                                   stdout=subprocess.PIPE, \
                                   stderr=subprocess.PIPE, \
-                                  timeout=int(args.e))
-        except subprocess.TimeoutExpired:
-          is_timeouted = True
+                                  check=True)
+        except subprocess.CalledProcessError as err:
+            print('A problem occurred: ' err)
+            print('Don\'t worry, this should be the student\'s mistake.')
+            subproc_exit_code = err.returncode
          
-        if is_timeouted:
-            decoded = 'A problem occurred: Time Limit Exceeded!'
-            decoded += 'Your code took too long to run (perhaps an infinite loop?)'
-            decoded += 'Please try to address the issue, and submit again.'
-        else:
-            decoded = result.stdout.decode("utf-8")
-            if decoded.strip(' \n\t') == '':
+        decoded = result.stdout.decode("utf-8")
+        if subproc_exit_code != 0:
+            if subproc_exit_code == 124:
+                decoded = 'A problem occurred: Time Limit Exceeded!'
+                decoded += 'Your code took too long to run (perhaps an infinite loop?)'
+                decoded += 'Please try to address the issue, and submit again.'
+            else:
                 decoded_err = result.stderr.decode("utf-8")
                 if decoded_err.strip(' \n\t') == '':
                     decoded = 'A problem occurred!\n'
@@ -257,6 +259,8 @@ for sdir in subdirs:
                     decoded += 'Your program produced an error when it\'s running.\n'
                     decoded += 'You will be able to get more details when debugging on your device.\n'
                     decoded += 'Please try to address the issue, and submit again.'
+                    print('RTE Details:\n\n', decoded_err)
+                    
 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
