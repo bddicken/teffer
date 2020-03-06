@@ -236,7 +236,7 @@ for sdir in subdirs:
                                   stderr=subprocess.PIPE, \
                                   check=True)
         except subprocess.CalledProcessError as err:
-            print('A problem occurred: ' err)
+            print('A problem occurred:', err)
             print('Don\'t worry, this should be the student\'s mistake.')
             subproc_exit_code = err.returncode
          
