@@ -229,18 +229,44 @@ for sdir in subdirs:
         # The gradescope problem is somewhere here ish!
         # Either command is not running correctly, or output not being grabbed correctly.
         # Run the script
-        result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
-                                stdout=subprocess.PIPE, \
-                                stderr=subprocess.PIPE, \
-                                timeout=(int(args.e) + 1))
+        subproc_exit_code = 0
+        try:
+            result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
+                                  stdout=subprocess.PIPE, \
+                                  stderr=subprocess.PIPE, \
+                                  check=True)
+        except subprocess.CalledProcessError as err:
+            # Print to stdout for staffs' debugging
+            print()
+            print('A problem occurred:', err)
+            print('Don\'t worry, this should be the student\'s mistake.')
+            result = err  # Gathering the stdout and stderr
+            subproc_exit_code = err.returncode
+         
         decoded = result.stdout.decode("utf-8")
-        if decoded.strip(' \n\t') == '':
-            decoded = 'A problem occurred!\n'
-            decoded += 'This issue could be one of a number of problems, including:\n'
-            decoded += '  * You named your file incorrectly\n'
-            decoded += '  * Your program produced an error\n'
-            decoded += '  * Your code took too long (perhaps an infinite loop?)\n'
-            decoded += 'Please try to address the issue, and submit again.'
+        
+        # If the command times out, then exit with status 124.
+        # Otherwise, exit with the status of COMMAND. 
+        if subproc_exit_code != 0:
+            if subproc_exit_code == 124:
+                decoded = 'A problem occurred: Time Limit Exceeded!\n'
+                decoded += 'Your code took too long to run (perhaps an infinite loop?)\n'
+                decoded += 'Please try to address the issue, and submit again.'
+            else:
+                decoded_err = result.stderr.decode("utf-8")
+                if decoded_err.strip(' \n\t') == '':
+                    decoded = 'A problem occurred!\n'
+                    decoded += 'This issue could be one of a number of problems, including:\n'
+                    decoded += '  * You named your file incorrectly\n'
+                    decoded += '  * Your program produced an unknown error\n'
+                    decoded += 'Please try to address the issue, and submit again.'
+                else:
+                    decoded = 'A problem occurred: Runtime Error\n'
+                    decoded += 'Your program produced an error when it\'s running.\n'
+                    decoded += 'You will be able to get more details when debugging on your device.\n'
+                    decoded += 'Please try to address the issue, and submit again.'
+                    print('\nRuntime Error Details:\n', decoded_err)
+                    
 
         actual_output_file = open(ac_path, "w")
         actual_output_file.write(decoded)
