@@ -189,7 +189,7 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
             #text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
-            text_file.write(',"output" : ' + json.dumps(sbs) + ',\n')
+            text_file.write(',"output" : ' + json.dumps(sbs) + '\n')
         for k, v in r.items():
             if k != 'extra_data':
                 text_file.write(',"' + k + '" : "' + str(v) + '"\n')
