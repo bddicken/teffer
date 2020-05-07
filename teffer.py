@@ -44,6 +44,7 @@ html_end = '''
 </body>
 </html>
 '''
+config_file_name   = "config.txt"
 expected = "expected.txt"
 actual   = "actual.txt"
 
@@ -163,7 +164,7 @@ def write_to_html(results, out_file_name, include_diff):
         text_file.write('<h2>' + r['name'] + '</h2>')
         if include_diff:
             diff = difflib.HtmlDiff().make_table(
-                r['expected'], r['actual'],
+                r['extra_data']['expected'], r['extra_data']['actual'],
                 expected, actual)
             text_file.write(diff)
         text_file.write('<br>')
@@ -180,17 +181,19 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
     i = 0
     for r in results:
         i += 1
-        text_file.write('  { "name" : ' + json.dumps(r['name']) + ',\n')
+        text_file.write('  { "name" : ' + json.dumps(r['name']) + '\n')
         if include_diff:
             sbs  = 'Your output on left, expected output on right\n'
             sbs += 'Lines beginning with a \'>\' indicates a line that differs from the expected output\n\n'
-            sbs += put_strings_side_by_side('\n'.join(r['actual']), '\n'.join(r['expected']))
+            sbs += put_strings_side_by_side('\n'.join(r['extra_data']['actual']), '\n'.join(r['extra_data']['expected']))
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
             #text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
             text_file.write('    "output" : ' + json.dumps(sbs) + ',\n')
-        text_file.write('    "score" : "' + str(r['score']) + '",\n')
-        text_file.write('    "max_score" : "' + str(r['max_score']) + '" }')
+        for k, v in r.items():
+            if k != 'extra_data':
+                text_file.write(',"' + k + '" : "' + str(v) + '"\n')
+        text_file.write('}')
         if i < len(results):
             text_file.write(',')
         text_file.write('\n')
@@ -198,124 +201,152 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
     text_file.write('] }\n')
     text_file.close()
 
-args = parser.parse_args()
-assert(args.m == 'test' or args.m == 'update' or args.m == 'clean')
-assert(args.f == 'html' or args.f == 'gradescope')
+def load_config(config_path):
+    '''
+    Load up any specific config info for a particular test case.
+    Returns a dictionary mapping config setting name (key) to 
+    the value for that config setting.
+    '''
+    config = {}
+    config_file = None
+    try:
+        config_file = open(config_path, 'r')
+    except:
+        return config
+    for line in config_file:
+        tokens = line.split(':')
+        config[tokens[0]] = tokens[1].strip('\n')
+    return config
 
-cwd = os.getcwd()
-subdirs = [name for name in os.listdir(args.t)
-    if os.path.isdir(os.path.join(args.t, name))]
+def main():
+    args = parser.parse_args()
+    assert(args.m == 'test' or args.m == 'update' or args.m == 'clean')
+    assert(args.f == 'html' or args.f == 'gradescope')
 
-for sdir in subdirs:
-    os.chdir(cwd)
-    full_path = os.path.join(args.t, sdir)
-    ex_path = os.path.join(full_path, expected)
-    ac_path = os.path.join(full_path, actual)
+    cwd = os.getcwd()
+    subdirs = [name for name in os.listdir(args.t)
+        if os.path.isdir(os.path.join(args.t, name))]
 
-    # test mode - run all of the test cases
-    if args.m == 'test':
-        run_file = open(os.path.join(full_path, 'run.sh'), 'rb')
-        script = run_file.read().decode("utf-8") 
-        script = script.replace('BASE_DIR', str(args.s))
-        script = script.replace('TEST_DIR', str(full_path))
-        
-        # Create new temp file with script
-        temp = os.path.join(cwd, 'teffer-temp.sh')
-        tf = open(temp, 'w')
-        tf.write('#!/bin/bash\n')
-        tf.write(script)
-        tf.close()
+    for sdir in subdirs:
+        os.chdir(cwd)
+        full_path = os.path.join(args.t, sdir)
+        ex_path = os.path.join(full_path, expected)
+        ac_path = os.path.join(full_path, actual)
+        config_path = os.path.join(full_path, config_file_name)
 
-        # The gradescope problem is somewhere here ish!
-        # Either command is not running correctly, or output not being grabbed correctly.
-        # Run the script
-        subproc_exit_code = 0
-        try:
-            result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
-                                  stdout=subprocess.PIPE, \
-                                  stderr=subprocess.PIPE, \
-                                  check=True)
-        except subprocess.CalledProcessError as err:
-            # Print to stdout for staffs' debugging
-            print()
-            print('A problem occurred:', err)
-            print('Don\'t worry, this should be the student\'s mistake.')
-            result = err  # Gathering the stdout and stderr
-            subproc_exit_code = err.returncode
-         
-        decoded = result.stdout.decode("utf-8")
-        
-        # If the command times out, then exit with status 124.
-        # Otherwise, exit with the status of COMMAND. 
-        if subproc_exit_code != 0:
-            if subproc_exit_code == 124:
-                decoded = 'A problem occurred: Time Limit Exceeded!\n'
-                decoded += 'Your code took too long to run (perhaps an infinite loop?)\n'
-                decoded += 'Please try to address the issue, and submit again.'
-            else:
-                decoded_err = result.stderr.decode("utf-8")
-                if decoded_err.strip(' \n\t') == '':
-                    decoded = 'A problem occurred!\n'
-                    decoded += 'This issue could be one of a number of problems, including:\n'
-                    decoded += '  * You named your file incorrectly\n'
-                    decoded += '  * Your program produced an unknown error\n'
+        # test mode - run all of the test cases
+        if args.m == 'test':
+            run_file = open(os.path.join(full_path, 'run.sh'), 'rb')
+            script = run_file.read().decode("utf-8") 
+            script = script.replace('BASE_DIR', str(args.s))
+            script = script.replace('TEST_DIR', str(full_path))
+            
+            # Create new temp file with script
+            temp = os.path.join(cwd, 'teffer-temp.sh')
+            tf = open(temp, 'w')
+            tf.write('#!/bin/bash\n')
+            tf.write(script)
+            tf.close()
+
+            # The gradescope problem is somewhere here ish!
+            # Either command is not running correctly, or output not being grabbed correctly.
+            # Run the script
+            subproc_exit_code = 0
+            try:
+                #result = subprocess.run(['gtimeout', args.e, '/bin/bash', temp], \
+                result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
+                                      stdout=subprocess.PIPE, \
+                                      stderr=subprocess.PIPE, \
+                                      check=True)
+            except subprocess.CalledProcessError as err:
+                # Print to stdout for staffs' debugging
+                print()
+                print('A problem occurred:', err)
+                print('Don\'t worry, this should be the student\'s mistake.')
+                result = err  # Gathering the stdout and stderr
+                subproc_exit_code = err.returncode
+             
+            decoded = result.stdout.decode("utf-8")
+            
+            # If the command times out, then exit with status 124.
+            # Otherwise, exit with the status of COMMAND. 
+            if subproc_exit_code != 0:
+                if subproc_exit_code == 124:
+                    decoded = 'A problem occurred: Time Limit Exceeded!\n'
+                    decoded += 'Your code took too long to run (perhaps an infinite loop?)\n'
                     decoded += 'Please try to address the issue, and submit again.'
                 else:
-                    decoded = 'A problem occurred: Runtime Error\n'
-                    decoded += 'Your program produced an error when it\'s running.\n'
-                    decoded += 'You will be able to get more details when debugging on your device.\n'
-                    decoded += 'Please try to address the issue, and submit again.\n'
-                    if "No such file or directory" in decoded_err or \
-                       "ModuleNotFoundError" in decoded_err:
-                        decoded += '\nYou may also need to check if you named your files correctly.\n'
-                        decoded += 'It should be exactly matched to the filename in the spec.'
-                    print('\nRuntime Error Details:\n', decoded_err)
-                    
+                    decoded_err = result.stderr.decode("utf-8")
+                    if decoded_err.strip(' \n\t') == '':
+                        decoded = 'A problem occurred!\n'
+                        decoded += 'This issue could be one of a number of problems, including:\n'
+                        decoded += '  * You named your file incorrectly\n'
+                        decoded += '  * Your program produced an unknown error\n'
+                        decoded += 'Please try to address the issue, and submit again.'
+                    else:
+                        decoded = 'A problem occurred: Runtime Error\n'
+                        decoded += 'Your program produced an error when it\'s running.\n'
+                        decoded += 'You will be able to get more details when debugging on your device.\n'
+                        decoded += 'Please try to address the issue, and submit again.\n'
+                        if "No such file or directory" in decoded_err or \
+                           "ModuleNotFoundError" in decoded_err:
+                            decoded += '\nYou may also need to check if you named your files correctly.\n'
+                            decoded += 'It should be exactly matched to the filename in the spec.'
+                        print('\nRuntime Error Details:\n', decoded_err)
+                        
 
-        actual_output_file = open(ac_path, "w")
-        actual_output_file.write(decoded)
+            actual_output_file = open(ac_path, "w")
+            actual_output_file.write(decoded)
 
-        actual_output_file.close()
-        
-        expected_lines = []
-        for line in open(ex_path, 'r'):
-            expected_lines.append(line.rstrip('\n'))
-        actual_lines = []
-        for line in open(ac_path, 'r'):
-            actual_lines.append(line.rstrip('\n'))
-       
-        a = '\n'.join(actual_lines)
-        e = '\n'.join(expected_lines)
-        # Ignore trailing spaces, newlines, and tabs
-        # Should this be an option?
-        a = a.rstrip(' \n\t')
-        e = e.rstrip(' \n\t')
-        same = are_strings_same(a, e)
-        result = {}
-        result['name']      = sdir
-        result['pass']      = same
-        result['score']     = 1 if same else 0
-        result['max_score'] = 1
-        result['expected']  = expected_lines
-        result['actual']    = actual_lines
-        all_test_results.append(result) 
-        
-        os.remove(temp)
-    # update mode - copy contents of expected.txt into actual.txt
-    elif args.m == 'update':
-        with open(ac_path) as fa:
-            lines = fa.readlines()
-            lines = [l for l in lines if True]
-            with open(ex_path, 'w') as fe:
-                fe.writelines(lines)
-    # clean mode - remove all actual.txt files
-    elif args.m == 'clean':
-        os.remove(ac_path)
-    else:
-        print('Invalid mode')
+            actual_output_file.close()
+            
+            expected_lines = []
+            for line in open(ex_path, 'r'):
+                expected_lines.append(line.rstrip('\n'))
+            actual_lines = []
+            for line in open(ac_path, 'r'):
+                actual_lines.append(line.rstrip('\n'))
+           
+            config = load_config(config_path)
+
+            a = '\n'.join(actual_lines)
+            e = '\n'.join(expected_lines)
+            # Ignore trailing spaces, newlines, and tabs
+            # Should this be an option?
+            a = a.rstrip(' \n\t')
+            e = e.rstrip(' \n\t')
+            same = are_strings_same(a, e)
+            result = {}
+            result['name']      = sdir
+            result['pass']      = same
+            result['score']     = 1 if same else 0
+            result['max_score'] = 1
+            for config_name, value in config.items():
+                result[config_name] = value
+            result['extra_data'] = {}
+            result['extra_data']['expected']  = expected_lines
+            result['extra_data']['actual']    = actual_lines
+            all_test_results.append(result) 
+            
+            os.remove(temp)
+        # update mode - copy contents of expected.txt into actual.txt
+        elif args.m == 'update':
+            with open(ac_path) as fa:
+                lines = fa.readlines()
+                lines = [l for l in lines if True]
+                with open(ex_path, 'w') as fe:
+                    fe.writelines(lines)
+        # clean mode - remove all actual.txt files
+        elif args.m == 'clean':
+            os.remove(ac_path)
+        else:
+            print('Invalid mode')
 
 
-if args.f == 'html':
-    write_to_html(all_test_results, args.o, args.i)
-elif args.f == 'gradescope':
-    write_to_gradescope_json(all_test_results, args.o, args.i)
+    if args.f == 'html':
+        write_to_html(all_test_results, args.o, args.i)
+    elif args.f == 'gradescope':
+        write_to_gradescope_json(all_test_results, args.o, args.i)
+
+main()
+
