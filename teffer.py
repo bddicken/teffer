@@ -264,7 +264,11 @@ for sdir in subdirs:
                     decoded = 'A problem occurred: Runtime Error\n'
                     decoded += 'Your program produced an error when it\'s running.\n'
                     decoded += 'You will be able to get more details when debugging on your device.\n'
-                    decoded += 'Please try to address the issue, and submit again.'
+                    decoded += 'Please try to address the issue, and submit again.\n'
+                    if "No such file or directory" in decoded_err or \
+                       "ModuleNotFoundError" in decoded_err:
+                        decoded += '\nYou may also need to check if you named your files correctly.\n'
+                        decoded += 'It should be exactly matched to the filename in the spec.'
                     print('\nRuntime Error Details:\n', decoded_err)
                     
 
@@ -315,4 +319,3 @@ if args.f == 'html':
     write_to_html(all_test_results, args.o, args.i)
 elif args.f == 'gradescope':
     write_to_gradescope_json(all_test_results, args.o, args.i)
-
