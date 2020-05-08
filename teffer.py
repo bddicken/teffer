@@ -342,7 +342,6 @@ def main():
         else:
             print('Invalid mode')
 
-
     if args.f == 'html':
         write_to_html(all_test_results, args.o, args.i)
     elif args.f == 'gradescope':
