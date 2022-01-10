@@ -255,8 +255,8 @@ def main():
             # Run the script
             subproc_exit_code = 0
             try:
-                result = subprocess.run(['gtimeout', args.e, '/bin/bash', temp], \
-                #result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
+                #result = subprocess.run(['gtimeout', args.e, '/bin/bash', temp], \
+                result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
                                       stdout=subprocess.PIPE, \
                                       stderr=subprocess.PIPE, \
                                       check=True)
