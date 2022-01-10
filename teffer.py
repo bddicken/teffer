@@ -44,9 +44,10 @@ html_end = '''
 </body>
 </html>
 '''
-config_file_name   = "config.txt"
-expected = "expected.txt"
-actual   = "actual.txt"
+CONFIG   = "config.txt"
+EXPECTED = "expected.txt"
+ACTUAL   = "actual.txt"
+OPTIONS  = "options.txt"
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('-f', default='html',
@@ -165,7 +166,7 @@ def write_to_html(results, out_file_name, include_diff):
         if include_diff:
             diff = difflib.HtmlDiff().make_table(
                 r['extra_data']['expected'], r['extra_data']['actual'],
-                expected, actual)
+                EXPECTED, ACTUAL)
             text_file.write(diff)
         text_file.write('<br>')
         text_file.write('<hr>')
@@ -230,16 +231,17 @@ def main():
     for sdir in subdirs:
         os.chdir(cwd)
         full_path = os.path.join(args.t, sdir)
-        ex_path = os.path.join(full_path, expected)
-        ac_path = os.path.join(full_path, actual)
-        config_path = os.path.join(full_path, config_file_name)
+        ex_path = os.path.join(full_path, EXPECTED)
+        ac_path = os.path.join(full_path, ACTUAL)
+        op_path = os.path.join(full_path, OPTIONS)
+        config_path = os.path.join(full_path, CONFIG)
 
         # test mode - run all of the test cases
         if args.m == 'test':
             run_file = open(os.path.join(full_path, 'run.sh'), 'rb')
             script = run_file.read().decode("utf-8") 
-            script = script.replace('BASE_DIR', str(args.s))
-            script = script.replace('TEST_DIR', str(full_path))
+            script = script.replace('BASE_DIR', str(os.path.abspath(str(args.s))))
+            script = script.replace('TEST_DIR', str(os.path.abspath(str(full_path))))
             
             # Create new temp file with script
             temp = os.path.join(cwd, 'teffer-temp.sh')
@@ -253,8 +255,8 @@ def main():
             # Run the script
             subproc_exit_code = 0
             try:
-                #result = subprocess.run(['gtimeout', args.e, '/bin/bash', temp], \
-                result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
+                result = subprocess.run(['gtimeout', args.e, '/bin/bash', temp], \
+                #result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
                                       stdout=subprocess.PIPE, \
                                       stderr=subprocess.PIPE, \
                                       check=True)
@@ -326,6 +328,10 @@ def main():
             result['extra_data'] = {}
             result['extra_data']['expected']  = expected_lines
             result['extra_data']['actual']    = actual_lines
+            # handle options
+            for line in open(op_path, 'r'):
+                sp = line.strip('\n').split('=')
+                result[sp[0]] = sp[1]
             all_test_results.append(result) 
             
             os.remove(temp)

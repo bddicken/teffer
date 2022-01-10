@@ -35,6 +35,7 @@ tests/
 │   └── expected.txt
 └── cool-test
     ├── run.sh
+    ├── options.txt
     └── expected.txt
 ```
 
@@ -43,6 +44,7 @@ The `actual.txt` is the captured stdout from running the command in `run.sh`.
 Teffer will diff `actual.txt` and `expected.txt`.
 Teffer will generate an HTML file containing all of the diffs from the test run.
 This HTML file can be viewed in a web-browser.
+The `options.txt` file can contain `key=value` pairs, one per line, for extra settings to include in the output.
 
 See the `teffer/tests` directory for a few example test cases.
 
