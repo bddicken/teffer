@@ -229,6 +229,7 @@ def main():
         if os.path.isdir(os.path.join(args.t, name))]
 
     for sdir in subdirs:
+        print("TESTING: " + str(sdir))
         os.chdir(cwd)
         full_path = os.path.join(args.t, sdir)
         ex_path = os.path.join(full_path, EXPECTED)
@@ -249,6 +250,8 @@ def main():
             tf.write('#!/bin/bash\n')
             tf.write(script)
             tf.close()
+            
+            decoded = 'DECODED OUPUT PLACEHOLDER'
 
             # The gradescope problem is somewhere here ish!
             # Either command is not running correctly, or output not being grabbed correctly.
@@ -260,15 +263,17 @@ def main():
                                       stdout=subprocess.PIPE, \
                                       stderr=subprocess.PIPE, \
                                       check=True)
-            except subprocess.CalledProcessError as err:
+                decoded = result.stdout.decode("utf-8")
+            except Exception as err:
+                decoded = 'A problem occurred when trying to decode the output of the program.'
+                decoded += 'You should debug and test your program more thoroughly.'
+                decoded += 'Have you considered the various edge cases?'
                 # Print to stdout for staffs' debugging
                 print()
                 print('A problem occurred:', err)
                 print('Don\'t worry, this should be the student\'s mistake.')
                 result = err  # Gathering the stdout and stderr
                 subproc_exit_code = err.returncode
-             
-            decoded = result.stdout.decode("utf-8")
             
             # If the command times out, then exit with status 124.
             # Otherwise, exit with the status of COMMAND. 
