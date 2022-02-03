@@ -298,7 +298,7 @@ def main():
                         decoded += '  * Your program produced an unknown error\n'
                         decoded += 'Please try to address the issue, and submit again.'
                     else:
-                        decoded = 'A problem occurred: X Runtime Error\n'
+                        decoded = 'A problem occurred: Runtime Error\n'
                         decoded += 'Your program produced an error when it\'s running.\n'
                         decoded += 'You will be able to get more details when debugging on your device.\n'
                         decoded += 'Please try to address the issue, and submit again.\n'
