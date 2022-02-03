@@ -63,7 +63,7 @@ parser.add_argument('-o', default='./diff.html',
 parser.add_argument('-t', default='./tests',
     help='Directory containing test cases (directories) to run.')
 parser.add_argument('-s', required=True,
-    help='Directory to find the program/script that the tests execute.')
+    help='directory to find the program/script that the tests execute.')
 parser.add_argument('-m', default='test',
     help='''Mode: 
     test: Run the test suite
@@ -71,6 +71,8 @@ parser.add_argument('-m', default='test',
     clean: Clean up all of the temporary files and actual.txt files''')
 parser.add_argument('-e', default='15',
     help='The timeout length, in seconds. This is a per-test-case timeout.')
+parser.add_argument('-c', default=False, action='store_true',
+    help='Enable if the program beign tested should be allowed to have a non-zero exit code.')
 
 '''
 Array of dictionaries
@@ -262,10 +264,11 @@ def main():
                 result = subprocess.run(['timeout', args.e, '/bin/bash', temp], \
                                       stdout=subprocess.PIPE, \
                                       stderr=subprocess.PIPE, \
-                                      check=True)
+                                      check= not args.c)
                 decoded = result.stdout.decode("utf-8")
+                decoded += result.stderr.decode("utf-8")
             except subprocess.CalledProcessError as err:
-                decoded = 'A problem occurred when trying to decode the output of the program.\n'
+                decoded += 'A problem occurred when trying to decode the output of the program.\n'
                 decoded += 'You should debug and test your program more thoroughly.\n'
                 decoded += 'Have you considered the various edge cases?\n'
                 # Print to stdout for staffs' debugging
@@ -275,10 +278,10 @@ def main():
                 result = err  # Gathering the stdout and stderr
                 subproc_exit_code = err.returncode
             except:
-                decoded = 'A problem occurred when trying to decode the output of the program.\n'
+                decoded += 'A problem occurred when trying to decode the output of the program.\n'
                 decoded += 'You should debug and test your program more thoroughly.\n'
                 decoded += 'Have you considered the various edge cases?\n'
-            
+           
             # If the command times out, then exit with status 124.
             # Otherwise, exit with the status of COMMAND. 
             if subproc_exit_code != 0:
@@ -286,7 +289,7 @@ def main():
                     decoded = 'A problem occurred: Time Limit Exceeded!\n'
                     decoded += 'Your code took too long to run (perhaps an infinite loop?)\n'
                     decoded += 'Please try to address the issue, and submit again.'
-                else:
+                elif args.c != True:
                     decoded_err = result.stderr.decode("utf-8")
                     if decoded_err.strip(' \n\t') == '':
                         decoded = 'A problem occurred!\n'
@@ -295,7 +298,7 @@ def main():
                         decoded += '  * Your program produced an unknown error\n'
                         decoded += 'Please try to address the issue, and submit again.'
                     else:
-                        decoded = 'A problem occurred: Runtime Error\n'
+                        decoded = 'A problem occurred: X Runtime Error\n'
                         decoded += 'Your program produced an error when it\'s running.\n'
                         decoded += 'You will be able to get more details when debugging on your device.\n'
                         decoded += 'Please try to address the issue, and submit again.\n'
