@@ -69,7 +69,7 @@ parser.add_argument('-m', default='test',
     test: Run the test suite
     update: update all of the expected.txt files with the actual.txt file contents
     clean: Clean up all of the temporary files and actual.txt files''')
-parser.add_argument('-e', default='15',
+parser.add_argument('-e', default='5',
     help='The timeout length, in seconds. This is a per-test-case timeout.')
 parser.add_argument('-c', default=False, action='store_true',
     help='Enable if the program beign tested should be allowed to have a non-zero exit code.')
