@@ -227,7 +227,7 @@ def main():
     assert(args.f == 'html' or args.f == 'gradescope')
 
     cwd = os.getcwd()
-    subdirs = [name for name in os.listdir(args.t)
+    subdirs = [name for name in sorted(os.listdir(args.t))
         if os.path.isdir(os.path.join(args.t, name))]
 
     for sdir in subdirs:
