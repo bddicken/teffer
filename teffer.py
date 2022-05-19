@@ -236,8 +236,11 @@ def main():
         full_path = os.path.join(args.t, sdir)
         ex_path = os.path.join(full_path, EXPECTED)
         ac_path = os.path.join(full_path, ACTUAL)
-        op_path = os.path.join(full_path, OPTIONS)
         config_path = os.path.join(full_path, CONFIG)
+        
+        op_path = ''
+        if os.path.exists(full_path + '/' + OPTIONS):
+            op_path = os.path.join(full_path, OPTIONS)
 
         # test mode - run all of the test cases
         if args.m == 'test':
@@ -341,9 +344,10 @@ def main():
             result['extra_data']['expected']  = expected_lines
             result['extra_data']['actual']    = actual_lines
             # handle options
-            for line in open(op_path, 'r'):
-                sp = line.strip('\n').split('=')
-                result[sp[0]] = sp[1]
+            if op_path != '':
+                for line in open(op_path, 'r'):
+                    sp = line.strip('\n').split('=')
+                    result[sp[0]] = sp[1]
             all_test_results.append(result) 
             
             os.remove(temp)
