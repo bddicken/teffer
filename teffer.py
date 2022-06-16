@@ -271,7 +271,7 @@ def main():
                 decoded = result.stdout.decode("utf-8")
                 decoded += result.stderr.decode("utf-8")
             except subprocess.CalledProcessError as err:
-                decoded += 'A problem occurred when trying to decode the output of the program.\n'
+                decoded = 'A problem occurred when trying to decode the output of the program.\n'
                 decoded += 'You should debug and test your program more thoroughly.\n'
                 decoded += 'Have you considered the various edge cases?\n'
                 # Print to stdout for staffs' debugging
@@ -281,7 +281,7 @@ def main():
                 result = err  # Gathering the stdout and stderr
                 subproc_exit_code = err.returncode
             except:
-                decoded += 'A problem occurred when trying to decode the output of the program.\n'
+                decoded = 'A problem occurred when trying to decode the output of the program.\n'
                 decoded += 'You should debug and test your program more thoroughly.\n'
                 decoded += 'Have you considered the various edge cases?\n'
            
