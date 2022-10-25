@@ -5,6 +5,7 @@ import os
 import difflib
 import sys
 import json
+sys.setrecursionlimit(2000)
 
 html_begin ='''
 <!DOCTYPE html>
