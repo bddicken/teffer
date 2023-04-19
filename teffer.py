@@ -7,21 +7,13 @@ import sys
 import json
 sys.setrecursionlimit(2000)
 
+html_style='''<style type="text/css">  table.diff {font-family:Courier; border:medium;}  .diff_header {background-color:#e0e0e0}  td.diff_header {text-align:right}  .diff_next {background-color:#c0c0c0}  .diff_add {background-color:#aaffaa}  .diff_chg {background-color:#ffff77}  .diff_sub {background-color:#ffaaaa}  </style>  '''
 html_begin ='''
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>teffer</title>
-  <style type="text/css">
-    table.diff {font-family:Courier; border:medium;}
-    .diff_header {background-color:#e0e0e0}
-    td.diff_header {text-align:right}
-    .diff_next {background-color:#c0c0c0}
-    .diff_add {background-color:#aaffaa}
-    .diff_chg {background-color:#ffff77}
-    .diff_sub {background-color:#ffaaaa}
-  </style>
+  <title>teffer</title>''' + html_style + '''
 </head>
 <body>
 '''
@@ -195,11 +187,15 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
             #sbs += put_strings_side_by_side('\n'.join(r['extra_data']['actual']), '\n'.join(r['extra_data']['expected']))
             # HERE
             r['output_format'] = 'html'
-            sbs = difflib.HtmlDiff().make_table(
+            sbs = '<div>'
+            sbs += html_style
+            diff = difflib.HtmlDiff().make_table(
                 r['extra_data']['expected'], r['extra_data']['actual'],
                 EXPECTED, ACTUAL)
-            sbs = sbs.replace('"', '\\"')
+            sbs += diff
             sbs = sbs.replace('\n', ' ')
+            sbs = sbs.replace('"', '\\"')
+            sbs += '</div>'
 
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
