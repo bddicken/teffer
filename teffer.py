@@ -186,13 +186,24 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
         i += 1
         text_file.write('  { "name" : ' + json.dumps(r['name']) + '\n')
         if include_diff:
-            sbs  = 'Your output on left, expected output on right\n'
-            sbs += 'Lines beginning with a \'>\' indicates a line that differs from the expected output\n\n'
-            sbs += put_strings_side_by_side('\n'.join(r['extra_data']['actual']), '\n'.join(r['extra_data']['expected']))
+            
+            #sbs  = 'Your output on left, expected output on right\n'
+            #sbs += 'Lines beginning with a \'>\' indicates a line that differs from the expected output\n\n'
+            
+            #sbs += put_strings_side_by_side('\n'.join(r['extra_data']['actual']), '\n'.join(r['extra_data']['expected']))
+            # HERE
+            r['output_format'] = 'html'
+            sbs = difflib.HtmlDiff().make_table(
+                r['extra_data']['expected'], r['extra_data']['actual'],
+                EXPECTED, ACTUAL)
+
             #diff = difflib.ndiff(r['expected'], r['actual'])
             #diff_text = '\n'.join(diff)
             #text_file.write('    "output" : ' + json.dumps(diff_text) + ',\n')
-            text_file.write(',"output" : ' + json.dumps(sbs) + '\n')
+            
+            #text_file.write(',"output" : ' + json.dumps(sbs) + '\n')
+            text_file.write(',"output" : \'' + sbs + '\'\n')
+        
         for k, v in r.items():
             if k != 'extra_data':
                 text_file.write(',"' + k + '" : "' + str(v) + '"\n')
