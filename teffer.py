@@ -194,6 +194,7 @@ def write_to_gradescope_json(results, out_file_name, include_diff):
                 EXPECTED, ACTUAL)
             sbs += diff
             sbs = sbs.replace('\n', ' ')
+            sbs = sbs.replace('\\', '\\\\"')
             sbs = sbs.replace('"', '\\"')
             sbs += '</div>'
 
